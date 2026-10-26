@@ -1,6 +1,8 @@
 name: FF Resonance Android diagnosis
 
 on:
+  push:
+    branches: [codex/ff-resonance-boss-transition]
   workflow_dispatch:
     inputs:
       source_ref:
@@ -19,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.source_ref }}
+          ref: ${{ inputs.source_ref || github.sha }}
           submodules: recursive
           fetch-depth: 1
           persist-credentials: false
