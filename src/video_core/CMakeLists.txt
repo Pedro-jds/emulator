@@ -47,6 +47,7 @@ add_library(video_core STATIC
     engines/engine_interface.h
     engines/engine_upload.cpp
     engines/engine_upload.h
+    engines/inline_upload.h
     engines/fermi_2d.cpp
     engines/fermi_2d.h
     engines/kepler_compute.cpp
@@ -97,6 +98,7 @@ add_library(video_core STATIC
     gpu_thread.cpp
     gpu_thread.h
     guest_memory.h
+    invalid_gpu_address.h
     invalidation_accumulator.h
     memory_manager.cpp
     memory_manager.h
