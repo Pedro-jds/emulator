@@ -1,0 +1,45 @@
+name: Atualizar FFR PR444
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout da branch v2
+        uses: actions/checkout@v4
+        with:
+          ref: teste-ffr-pr444-v2
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Buscar commits do Splaser
+        run: |
+          git remote add splaser https://github.com/Splaser/emulator.git
+          git fetch splaser codex/ff-resonance-boss-transition
+
+      - name: Aplicar quatro commits novos
+        run: |
+          set -e
+          for commit in \
+            d476a9a \
+            daddb01 \
+            fc6729c \
+            825fd19
+          do
+            git cherry-pick "$commit"
+          done
+
+      - name: Enviar branch atualizada
+        run: |
+          git push origin HEAD:teste-ffr-pr444-v2
