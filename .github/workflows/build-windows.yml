@@ -1,0 +1,60 @@
+name: Build Citron FFR (Windows Clangtron)
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Branch do Citron a compilar'
+        required: true
+        default: 'teste-ffr-pr444'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-clangtron:
+    name: Windows Clangtron x64
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CPM_SOURCE_CACHE: /home/runner/.cache/cpm
+    steps:
+      - name: Checkout da branch selecionada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch }}
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Mostrar commit selecionado
+        run: |
+          echo "Branch: ${{ inputs.source_branch }}"
+          git rev-parse HEAD
+
+      - name: Cache CPM e toolchain
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/cpm
+          key: clangtron-cache-${{ runner.os }}-${{ hashFiles('CMakeModules/dependencies.cmake', 'build-clangtron-windows.sh') }}
+          restore-keys: |
+            clangtron-cache-${{ runner.os }}-
+
+      - name: Setup Clangtron
+        run: |
+          chmod +x build-clangtron-windows.sh
+          ./build-clangtron-windows.sh setup
+          echo "${HOME}/.cache/cpm/llvm-mingw/bin" >> "$GITHUB_PATH"
+
+      - name: Build Windows
+        run: |
+          export CITRON_BUILD_TYPE=Release
+          ./build-clangtron-windows.sh use --pgo none --lto full
+
+      - name: Enviar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: Citron-FFR-Windows-Clangtron
+          path: build/use-nopgo/bin/*
+          if-no-files-found: error
+          retention-days: 7
