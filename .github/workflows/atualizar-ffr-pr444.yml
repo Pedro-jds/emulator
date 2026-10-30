@@ -29,11 +29,13 @@ jobs:
           git remote add splaser https://github.com/Splaser/emulator.git
           git fetch splaser codex/ff-resonance-boss-transition
 
-      - name: Aplicar ultimo commit
+      - name: Aplicar tres novos commits
         run: |
           set -e
           for commit in \
-            2b712ec
+            5af3a00 \
+            15be486 \
+            51283c9
           do
             git cherry-pick "$commit"
           done
