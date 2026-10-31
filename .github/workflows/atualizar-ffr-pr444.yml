@@ -1,3 +1,4 @@
+
 name: Atualizar FFR PR444
 
 on:
@@ -28,12 +29,15 @@ jobs:
           git remote add splaser https://github.com/Splaser/emulator.git
           git fetch splaser codex/ff-resonance-boss-transition
 
-      - name: Aplicar quatro commits novos
+      - name: Aplicar cinco novos commits
         run: |
           set -e
-            for commit in \
-            fc9bc00 \
-            b4549b9
+          for commit in \
+            647a5b6 \
+            3b0cf69 \
+            d1a56f0 \
+            c405675 \
+            be02e62
           do
             git cherry-pick "$commit"
           done
@@ -41,3 +45,4 @@ jobs:
       - name: Enviar branch atualizada
         run: |
           git push origin HEAD:teste-ffr-pr444-v2
+
